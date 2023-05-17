@@ -94,7 +94,7 @@
                         <option value="5">Стол 5</option>
                         <option value="6">Стол 6</option>
                     </select>
-                    <button class="btn" on:click={clearStore}>очистить корзину</button>
+                    <button class="btn" on:click={clearStore}>Очистить корзину</button>
                     <button class="btn" on:click={confirm}>Заказать</button>
                 </div>
                 </div>

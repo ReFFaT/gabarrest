@@ -1,37 +1,177 @@
 <svelte:head>
-  <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen">
-		<link rel="stylesheet" href="/css/style.css" media="screen">
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </svelte:head>
-<header class="u-clearfix u-header u-header naf" id="sec-079d">
-    <div class="u-clearfix u-sheet u-sheet-1">
-      <h1 class="u-text u-text-default u-text-palette-1-base u-text-1">Gabar rest​ourant</h1>
-      <ul class="u-align-center u-nav u-popupmenu-items u-unstyled u-nav-2">
-        <li class="u-nav-item"><a class="u-button-style u-nav-link" href="/home">Главная</a></li>
-        <li class="u-nav-item"><a class="u-button-style u-nav-link" href="/menu">Меню</a></li>
-        <li class="u-nav-item"><a class="u-button-style u-nav-link" href="/info">Корзина</a></li>
-        <li class="u-nav-item"><a class="u-button-style u-nav-link" href="/order">Заказ</a></li>
+<script>
+	import { onMount } from "svelte";
+  let mover
+  let beforeElem
+  function pointerMove (mover,thisElem) {
+    while (thisElem.classList.contains('li')!== true){
+      thisElem=thisElem.parentNode;
+    }
+    if(thisElem!== beforeElem){
+      let thisElemRect =thisElem.getBoundingClientRect();
+      mover.style.left=thisElemRect.left +thisElemRect.width/2-mover.getBoundingClientRect().width/2  +"px";
+      thisElem.classList.add("active");
+      if(beforeElem){
+        beforeElem.classList.remove("active")
+      }
+      beforeElem=thisElem
+    }
+  }
+  onMount(()=>{
+    mover =document.getElementById("mover")
+    switch(window.location.pathname) {
+      case '/home':
+        pointerMove(mover,document.getElementById("home"));
+        break;
+      case '/menu':
+        pointerMove(mover,document.getElementById("menu"));
+      break;
+      case '/info':
+        pointerMove(mover,document.getElementById("info"));
+      break;
+      case '/order':
+        pointerMove(mover,document.getElementById("order"));
+      break;
+      default:
+        break;
+    }
+  })
+
+</script>
+<header class="my-Header">
+  <div class="navigation">
+      <ul class="ul">
+        <li class="li " id="home" on:click={(e)=>pointerMove(mover,e.target)}>
+          <a  href="/home" class="a">
+            <span class="text">Главная</span>
+          </a>
+        </li>
+        <li class="li" id="menu" on:click={(e)=>pointerMove(mover,e.target)}>
+          <a href="/menu" class="a">
+            <span class="text">Меню</span>
+          </a>
+        </li>
+        <li class="li" id="info" on:click={(e)=>pointerMove(mover,e.target)}>
+          <a  href="/info" class="a">
+            <span class="text">Корзина</span>
+          </a>
+        </li>
+        <li class="li" id="order" on:click={(e)=>pointerMove(mover,e.target)}>
+          <a href="/order" class="a">
+            <span class="text">Заказ</span>
+          </a>
+        </li>
+        
       </ul>
     </div>
-  </header>
-<style>
-    .u-nav{
-        color: #fdd935 !important
-    }
-    .u-nav-item{
-        margin: 0 15px;
-    }
-    .naf{
-        display: flex;
-    }
-    :global(.u-header){
-        background-color: #000000;
-    }
-    :global(.u-header .u-text-1) {
-    margin: 8px auto 0 auto;
-}
-:global(.padd) {
-padding: 0 0 0 15%;
-}
+    <div class="indicator-wrap" id="mover">
+      <div class="indicator"></div>
+    </div>
+    
+</header>
+    
 
+<style>
+  .my-Header{
+    margin-top: 50px;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    padding-left:100px;
+    display: flex;
+    align-items: center;
+
+  }
+  .navigation{
+    position: relative;
+      
+    z-index: 2;
+    width: 800px;
+    height: 60px;
+    background: #FFF;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* border: 1px solid;
+    border-color: #222327; */
+    border-radius: 10px;
+  }
+  .ul{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    border-radius: 10px;
+    background: #FFF;
+    height: 100%;
+     padding: 0;
+  }
+  .li{
+    list-style: none;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 30px;
+    z-index: 2;
+  }
+  .a{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    text-align: center;
+    font-weight: 600;
+  }
+  .text{
+    position: absolute;
+    font-size: 22px;
+    color: #222327;
+    width: 100%;
+    padding: 5px 12px;
+    border-radius: 12px;
+    font-weight: 400;
+    transition: .7s;
+    transform:  translateY(15px);
+  }
+  :global(.li.active .text){
+    transform:  translateY(30px);
+    color: #2196f3;
+    opacity: 1;
+  }
+  .indicator-wrap{
+    left: 125px;
+    position: absolute;
+    bottom: -25px;
+    width: 170px;
+    height: 60px;
+    overflow: hidden;
+    z-index: 1;
+    transition: all .5s;
+  }
+  .indicator{
+    position: absolute;
+    width: 170px;
+    height: 170px;
+    background: #fff;
+    bottom: 0;
+    border-radius: 50%;
+  }
 </style>
+
 <slot></slot>
+
+<!-- <div class="header-wrap">
+  <ul class="u-align-center u-nav u-popupmenu-items u-unstyled u-nav-2">
+    <li class="u-nav-item"><a class="u-button-style u-nav-link" href="/home">Главная</a></li>
+    <li class="u-nav-item"><a class="u-button-style u-nav-link" href="/menu">Меню</a></li>
+    <li class="u-nav-item"><a class="u-button-style u-nav-link" href="/info">Корзина</a></li>
+    <li class="u-nav-item"><a class="u-button-style u-nav-link" href="/order">Заказ</a></li>
+  </ul>
+</div> -->
