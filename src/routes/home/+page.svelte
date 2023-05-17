@@ -118,13 +118,13 @@
 
 .banner svg>g>use:nth-child(1) {
   animation-delay: -2s;
-  fill: #7986cb;
+  fill: #7987cb88;
 }
 
 .banner svg>g>use:nth-child(2) {
   animation-delay: -2s;
   animation-duration: 17s;
-  fill: #9ba7ee;
+  fill: #9ba7ee93;
 }
 
 .banner svg>g>use:nth-child(3) {
