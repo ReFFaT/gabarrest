@@ -1,4 +1,6 @@
 <script>
+	import Wave from "$lib/wave.svelte";
+
   let menu=[{
     id:"1",
     image:"img/single_food_1.png",
@@ -99,6 +101,7 @@
     </div>
   </div>
 </section>
+<Wave />
 <section class="food_menu">
     <div class="container">
       {#if openmodal==false}
@@ -202,7 +205,6 @@
       left: 0;
       position: absolute;
       background-color: rgba(0, 0, 0, .7);
-      z-index: 1;
     }
     .banner-area > div{
       position: relative;
