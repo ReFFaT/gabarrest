@@ -1,6 +1,5 @@
 <svelte:head>
-  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
 </svelte:head>
 <script>
 	import { onMount } from "svelte";
@@ -46,21 +45,25 @@
       <ul class="ul">
         <li class="li " id="home" on:click={(e)=>pointerMove(mover,e.target)}>
           <a  href="/home" class="a">
+            <img src="/images/home-outline.svg" class="navigation__image" alt="">
             <span class="text">Главная</span>
           </a>
         </li>
         <li class="li" id="menu" on:click={(e)=>pointerMove(mover,e.target)}>
           <a href="/menu" class="a">
+            <img src="/images/book-outline.svg" class="navigation__image" alt="">
             <span class="text">Меню</span>
           </a>
         </li>
         <li class="li" id="info" on:click={(e)=>pointerMove(mover,e.target)}>
           <a  href="/info" class="a">
+            <img src="/images/basket-outline.svg" class="navigation__image" alt="">
             <span class="text">Корзина</span>
           </a>
         </li>
         <li class="li" id="order" on:click={(e)=>pointerMove(mover,e.target)}>
           <a href="/order" class="a">
+            <img src="/images/ice-cream-outline.svg" class="navigation__image" alt="">
             <span class="text">Заказ</span>
           </a>
         </li>
@@ -77,6 +80,7 @@
 <style>
   .my-Header{
     margin-top: 50px;
+    z-index: 100;
     position: absolute;
     top: 0;
     width: 100%;
@@ -129,6 +133,21 @@
     text-align: center;
     font-weight: 600;
   }
+  .navigation__image{
+    position: absolute;
+    top: 0;
+    width: 35px;
+    height: 35px;
+    opacity: 0;
+    transition: all .5s;
+  }
+  :global(.li.active .navigation__image){
+    color: #2196f3;
+    fill: #2196f3;
+    top: 30px;
+    opacity: 1;
+    color: red;
+  }
   .text{
     position: absolute;
     font-size: 22px;
@@ -141,15 +160,15 @@
     transform:  translateY(15px);
   }
   :global(.li.active .text){
-    transform:  translateY(30px);
+    transform:  translateY(5px);
     color: #2196f3;
     opacity: 1;
   }
   .indicator-wrap{
     left: 125px;
     position: absolute;
-    bottom: -25px;
-    width: 170px;
+    bottom: -40px;
+    width: 120px;
     height: 60px;
     overflow: hidden;
     z-index: 1;
@@ -157,12 +176,13 @@
   }
   .indicator{
     position: absolute;
-    width: 170px;
-    height: 170px;
+    width: 120px;
+    height: 120px;
     background: #fff;
     bottom: 0;
     border-radius: 50%;
   }
+
 </style>
 
 <slot></slot>
