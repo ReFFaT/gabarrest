@@ -1,7 +1,4 @@
 <svelte:head>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap" rel="stylesheet">
 </svelte:head>
 <script>
 	import Wave from "$lib/wave.svelte";
@@ -243,22 +240,6 @@
     .menu-title h2{
       color: black !important;
     }
-    .single-food.open{
-      margin: 0 auto;
-      display: flex;
-      width: 50vw !important;
-      flex-direction: row !important;
-    }
-    .cursor-pointer{
-      cursor: pointer;
-    }
-    h1 {
-      color: #fff;
-      font-family: "Playfair Display",serif;
-      font-size: 60px !important;
-      font-weight: 700;
-      font-style: italic;
-    }
     .banner-area2 p {
       color: #fff;
     }
@@ -283,11 +264,5 @@
     .banner-area > div{
       position: relative;
       z-index: 2;
-    }
-    .media{
-      cursor: pointer;
-    }
-    .section_tittle{
-      text-align: center;
     }
   </style>
