@@ -159,10 +159,10 @@
           <h2>Популярные блюда</h2>
           <p>Толко они доступны для заказа</p>
         </div>
-        <div class="row">
+        <div class="row mt-5 food-wrapper">
           {#each menu as el, i }
-              <div class="col-md-4 col-sm-6 cursor-pointer" id={el.id}>
-                <div class="single-food mt-5">
+              <div class="col-md-4 col-sm-6 cursor-pointer " id={el.id}>
+                <div class="single-food ">
                   <div class="food-img">
                     <img src="/images/menu-image/{el.image}" class="img-fluid" alt="">
                   </div>
@@ -208,6 +208,25 @@
   </section>
 
   <style>
+    .single-food{
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    .food-content{
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .food-content .order__count{
+      margin-top: auto;
+    }
+    .food-wrapper{
+      row-gap: 30px;
+    }
+
+
+
     .food-area .single-food:hover .food-content .btn.order{
       background-color: #fff;
       color: black;
