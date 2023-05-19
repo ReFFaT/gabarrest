@@ -35,7 +35,7 @@
   margin-bottom: -100px;
 }
 .banner{
-    margin-top: -113px;
+    margin-top: -115px;
 }
 .banner.bottom{
   position: relative;
