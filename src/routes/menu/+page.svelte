@@ -2,7 +2,7 @@
 </svelte:head>
 <script>
 	import Wave from "$lib/wave.svelte";
-
+  let menuModal=false
   let menu=[
   {
     id:"1",
@@ -113,7 +113,7 @@
     name:menu[id].name,
     title:menu[id].title,
     price:menu[id].price,
-    amount:count
+    amount:Number(count)
   }
     if(localStorage.getItem("myEat")==null){
       let storeAdd=[]
@@ -174,8 +174,15 @@
                     <p class="pt-3">{el.title}</p>
                     <div class="order__count">
                       <button class="btn order" on:click={()=>{
-                        let counter =document.getElementById("count-order-"+el.id) 
-                        setLocal(Number(el.id),counter.value)
+                        console.log(localStorage.getItem('vxod'))
+                        if(localStorage.getItem('vxod')=="true"){
+                          let counter =document.getElementById("count-order-"+el.id) 
+                          setLocal(Number(el.id),counter.value)
+                        }
+                        else{
+                          menuModal=true
+                        }
+
                       }}>Добавить в корзину</button>
                       <select name=""  id="count-order-{el.id}" class="order-count-select">
                         <option value="1" selected>1</option>
@@ -206,8 +213,57 @@
         </div>
     </div>
   </section>
+  {#if menuModal}
+  <div class="menu-vhod" >
+    <div class="menu-vhod__wrapper">
+      <div class="menu-vhod__close" on:click={()=>menuModal=false}>
+        <span>Закрыть</span>
+      </div>
+      <div class="menu-vhod__info">
+        <span>Пожалуста, Войдите перед заказом</span>
+      </div>
+    </div>
+  </div>
+{/if}
 
   <style>
+    .menu-vhod{
+      background-color: rgba(0, 0, 0, .6);
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      display: flex;
+      justify-content: center;
+      left: 0;
+      z-index:15;
+    }
+    .menu-vhod__wrapper{
+      margin-top: 35vh;
+      padding: 25px;
+      width: 50vw;
+      height: 30vh;
+      background-color: #fff;
+      border-radius: 20px;
+    }
+    .menu-vhod__info{
+      display: flex;
+      width: 100%;
+      height: 100%;
+      justify-content: center;
+      align-items: center;
+      font-size: 28px;
+      font-family: "Playfair Display",serif;
+    }
+    .menu-vhod__close{
+      width: min-content;
+      border-radius: 10px;
+      border: 1px solid black;
+      font-size: 18px;
+      cursor: pointer;
+      padding: 5px;
+      margin-left: auto;
+    }
     .single-food{
       display: flex;
       flex-direction: column;

@@ -30,7 +30,7 @@ import Wave from "$lib/wave.svelte";
       <div class="row">
         <div class="col-md-6 align-self-center">
           <div class="welcome-img">
-            <img src="/images/welcome-bg.png.webp" class="img-fluid" alt="">
+            <img src="/images/welcome-bg.png.webp" class="" alt="">
           </div>
         </div>
         <div class="col-md-6 align-self-center">

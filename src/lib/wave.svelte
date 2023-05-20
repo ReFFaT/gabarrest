@@ -35,6 +35,8 @@
   margin-bottom: -100px;
 }
 .banner{
+  position: relative;
+  z-index: 1;
     margin-top: -115px;
 }
 .banner.bottom{

@@ -5,7 +5,14 @@
 	import { onMount } from "svelte";
   let mover
   let beforeElem
+  let vhod={
+    vxod:"false",
+    vxodModal :false,
+    registerModal:false,
+    vhodText: "Войти"
+  }
   function pointerMove (mover,thisElem) {
+    console.log(123)
     while (thisElem.classList.contains('li')!== true){
       thisElem=thisElem.parentNode;
     }
@@ -19,7 +26,12 @@
       beforeElem=thisElem
     }
   }
+
   onMount(()=>{
+    vhod.vxod = localStorage.getItem('vxod')
+    if(vhod.vxod=="true"){
+      vhod.vhodText="Выйти"
+    }
     mover =document.getElementById("mover")
     switch(window.location.pathname) {
       case '/home':
@@ -67,6 +79,19 @@
             <span class="text">Заказ</span>
           </a>
         </li>
+          <li class=" vxod">
+            <button class="vxod__btn" on:click={()=>{
+                if((vhod.vxod?? "false")=="false"){
+                  vhod.vxodModal=true
+                }
+                else if((vhod.vxod?? "false")=="true"){
+                  localStorage.setItem('vxod',"false")
+                  vhod.vhodText="Войти"
+                  vhod.vxod="false"
+                  localStorage.setItem("myEat","[]")
+                }
+              }}>{vhod.vhodText}</button>
+          </li>
         
       </ul>
     </div>
@@ -75,12 +100,149 @@
     </div>
     
 </header>
-    
+{#if vhod.vxodModal}
+    <div class="vxod-modal" >
+      <div class="vxod-modal__wrapper">
+        <div class="vxod-modal__close" on:click={()=>vhod.vxodModal=false}>
+          <span>Закрыть</span>
+        </div>
+        <div class="vxod-modal__info">
+          <div class="vxod-modal__info-swipe">
+            <span class="active" id="header_vhod" on:click={(e,login=document.getElementById("header_login"))=>{
+              e.target.classList.add("active")
+              login.classList.remove("active")
+              vhod.registerModal=false
+            }}>Вход</span>
+            <span id="header_login"on:click={(e,login=document.getElementById("header_vhod"))=>{
+              e.target.classList.add("active")
+              login.classList.remove("active")
+              vhod.registerModal=true
+            }}>Регистрация</span>
+          </div>
+          {#if vhod.registerModal}
+            <input type="text" placeholder="Email">
+            <input type="text" placeholder="Логин">
+            <input type="text" placeholder="Пароль">
+            <input type="text" placeholder="Повторите пароль">
+            <button on:click={()=>{
+              localStorage.setItem('vxod',"true")
+              vhod.vxod="true"
+              vhod.vhodText="Выйти"
+              vhod.vxodModal=false
+            }}>Регистрация</button>
+          {:else}
+            <input type="text" placeholder="Логин">
+            <input type="text" placeholder="Пароль">
+            <button on:click={()=>{
+              localStorage.setItem('vxod',"true")
+              vhod.vxod="true"
+              vhod.vhodText="Выйти"
+              vhod.vxodModal=false
+            }}>Войти</button>
+          {/if}
+
+        </div>
+      </div>
+    </div>
+{/if}
 
 <style>
+  .vxod-modal__info-swipe{
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    font-weight: 700;
+
+
+  }
+  .vxod-modal__info-swipe span{
+    width: min-content;
+        border: 1px solid black;
+        padding: 5px 10px;
+        border-radius: 10px;
+    cursor: pointer;
+  }
+  .vxod-modal__info-swipe span.active{
+    color: #555557;
+    background-color: #dfdfe9;
+  }
+  .vxod-modal__info{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 20px;
+  }
+  .vxod-modal__info input{
+    width: 90%;
+    font-size: 20px;
+    padding: 0 10px;
+    border-radius: 15px;
+    height: 50px;
+  }
+  .vxod-modal__info button{
+    width: 250px;
+    height: 40px;
+    border-radius: 15px;
+    background-color: transparent;
+    font-size: 20px;
+  }
+  .vxod-modal{
+    background-color: rgba(0, 0, 0, .6);
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    left: 0;
+    z-index:15;
+  }
+  .vxod-modal__wrapper{
+    margin-top: 25vh;
+    padding: 25px;
+    width: 50vw;
+    height: 50vh;
+    background-color: #fff;
+    border-radius: 20px;
+  }
+  .vxod-modal__close{
+    width: min-content;
+    border-radius: 10px;
+    border: 1px solid black;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 5px;
+    margin-left: auto;
+  }
+
+  .vxod{
+    width: 100%;
+    padding: 0 15px 0 0;
+    height: 100% !important;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+    justify-content: end;
+  }
+  .vxod__btn{
+    border-radius: 10px;
+    padding: 5px;
+    font-size: 18px;
+    background-color: transparent;
+    transition: all .3s;
+  }
+  .vxod__btn:hover{
+    background-color: #dfdfe9 !important;
+    border-color: transparent;
+  }
+
   .my-Header{
     margin-top: 50px;
-    z-index: 100;
+    z-index: 10;
     position: absolute;
     top: 0;
     width: 100%;
