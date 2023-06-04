@@ -2,11 +2,18 @@
 <script>
 	import { onMount } from "svelte";
     import Wave from "$lib/wave.svelte";
+	import { user } from "../../store/user";
+	import { element } from "svelte/internal";
+
+
+    let userAdress=""
+    let userphone=""
+
     let menu=[]
     let check=0
     let clearStore = ()=>{
         console.log(1311)
-        localStorage.setItem("myEat","[]")
+        localStorage.setItem("preOrder","[]")
         menu = [ ]
     }
     let deleteItem =(e)=>{
@@ -16,7 +23,7 @@
                 menu.splice(i,1)
                 menu=menu
             }
-            localStorage.setItem("myEat",(JSON.stringify(menu)))
+            localStorage.setItem("preOrder",(JSON.stringify(menu)))
             if(menu.length==0){
                 menu=[]
             }
@@ -24,36 +31,61 @@
         })
         check=0
         menu.forEach(e=>{
-            check=check + e.price*e.amount;
+            check=check + e.price*e.value;
         })
-        
+        console.log(menu)
     }
     let confirm =()=>{
-        let order={
-            orderMenu:menu,
-            table:select,
-        }
+        let order=menu.map(element=>{
+            return {"id":element.id, "value":element.value} 
+        })
+        let today = new Date();
+        console.log(order)
+        fetch('http://127.0.0.1:5000/order', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body:JSON.stringify( {
+                "user_id": localStorage.getItem("userId"),
+                "address": userAdress,
+                "time": today.toLocaleString(),
+                "list": [
+                    ...order
+                ],
+                "phone":userphone,
+                "status":"waiting"
+            })
+            })
+            .then(response => response.json())
+            .then(data => {
+                
+                console.log(data)
+
+                // Обработка полученных данных меню
+            })
+            .catch(error => {
+                // Обработка ошибок
+                console.error('Ошибка при получении меню:', error);
+            });
         localStorage.setItem("order",(JSON.stringify(order)))
         menu=[]
-        localStorage.setItem("myEat","[]")
+        localStorage.setItem("preOrder","[]")
     }
-    let select;
-    $:select;
+
     $:menu
     onMount(()=>{
-        const localStor = localStorage.getItem("myEat")
+        const localStor = localStorage.getItem("preOrder")
         if (localStor == null){
             menu=[]
         }
         else{
             menu = JSON.parse(localStor)
+            console.log(menu)
         }
         menu.forEach(e=>{
-            check=check + e.price*e.amount;
+            check=check + e.price*e.value;
         })
-        if(localStorage.getItem("vxod")!=="true"){
-            menu=[]
-        }
     })
 </script>
 
@@ -68,7 +100,7 @@
   </div>
 </section>
 <Wave />
-    {#if menu.length==0}
+    {#if menu.length==0 || $user.id == undefined}
     <div class="container-info">
         <h1>Корзина пуста</h1>
     </div>
@@ -87,11 +119,11 @@
                     <div class="preorder">
                         {#each menu as el, i }
                             <div class="single_food_item media" id={el.id} >
-                                <img src=/images/menu-image/{el.image} class="img-responsive" alt="...">
+                                <img src={el.image} class="img-responsive" alt="...">
                                 <div class="media-body align-self-center">
                                     <h3>{el.name}</h3>
-                                    <h5>Цена: {el.price*el.amount} р</h5>
-                                    <h5>Количетво: {el.amount}</h5>
+                                    <h5>Цена: {el.price*el.value} р</h5>
+                                    <h5>Количетво: {el.value}</h5>
                                     <h5 style="cursor: pointer;" on:click={(e)=>{deleteItem(e)}}>удалить</h5>
                                 </div>
                             </div>
@@ -99,15 +131,9 @@
                     </div>
                     <div class="preorder__wrapper">
                         <h2>Всего: {check} р</h2>
-                        <h3>Забронировать стол</h3>
-                        <select name="" class="form-select" bind:value={select}>
-                            <option value="1" selected>Стол 1</option>
-                            <option value="2">Стол 2</option>
-                            <option value="3">Стол 3</option>
-                            <option value="4">Стол 4</option>
-                            <option value="5">Стол 5</option>
-                            <option value="6">Стол 6</option>
-                        </select>
+                        <h3>Укажите ваш адрес и номер телефона</h3>
+                        <input name="" type="text" class="form-input" bind:value={userAdress} placeholder="Номер телефона"/>
+                        <input name="" type="text" class="form-input" bind:value={userphone} placeholder="Адресс"/>
                         <button class="btn" on:click={clearStore}>Очистить корзину</button>
                         <button class="btn mb-5" on:click={confirm}>Заказать</button>
                     </div>
@@ -128,6 +154,7 @@
         color: black !important;
     }
     .preorder__wrapper{
+        margin-top: 40px;
         padding: 0 20px;
         display: flex;
         justify-content: center;
@@ -138,10 +165,16 @@
         max-width: 300px;
         border: 1px solid black;
     }
-    .form-select{
-        height: 40px;
+    .preorder__wrapper h2{
+        color: black !important;
+    }
+    .form-input{
+        border-radius: 10px;
+        width: 350px;
+        font-size: 18px;
+        height: 50px;
         margin: 10px 0 10px 0;
-        cursor: pointer;
+        padding: 0 10px 2px 10px;
     }
     .btn{
         padding: 5px 10px;
@@ -161,7 +194,9 @@
     }
     .img-responsive{
         width: 416px;
-        height: 344px;
+        min-height: 344px;
+        max-height: 344px;
+        object-fit: cover;
     }
     .single_food_item {
         display: flex;

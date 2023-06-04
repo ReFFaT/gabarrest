@@ -3,16 +3,27 @@
 </svelte:head>
 <script>
 	import { onMount } from "svelte";
+	import { user } from "../store/user";
+
+  let vxodLogin;
+  let vxodPass;
+
+let register={
+  email:"",
+  name:"",
+  pass:""
+}
+
   let mover
   let beforeElem
   let vhod={
     vxod:"false",
     vxodModal :false,
     registerModal:false,
-    vhodText: "Войти"
+    vhodText: "Войти",
   }
   function pointerMove (mover,thisElem) {
-    console.log(123)
+    // console.log(123)
     while (thisElem.classList.contains('li')!== true){
       thisElem=thisElem.parentNode;
     }
@@ -28,9 +39,31 @@
   }
 
   onMount(()=>{
-    vhod.vxod = localStorage.getItem('vxod')
-    if(vhod.vxod=="true"){
-      vhod.vhodText="Выйти"
+    let userId=localStorage.getItem("userId")
+    // console.log(userId)
+    if(userId && userId!==''){
+      fetch(`http://127.0.0.1:5000/users/${userId}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      )
+      .then(response => response.json())
+      .then(data => {
+        vhod.vxod="true"
+        vhod.vhodText="Выйти"
+        // console.log(data)
+        user.set(data)
+        console.log($user)
+        // Обработка полученных данных меню
+      })
+      .catch(error => {
+        // Обработка ошибок
+        console.error('Ошибка при получении меню:', error);
+      }
+      );
     }
     mover =document.getElementById("mover")
     switch(window.location.pathname) {
@@ -53,6 +86,7 @@
 
 </script>
 <header class="my-Header">
+  
   <div class="navigation">
       <ul class="ul">
         <li class="li " id="home" on:click={(e)=>pointerMove(mover,e.target)}>
@@ -76,7 +110,7 @@
         <li class="li" id="order" on:click={(e)=>pointerMove(mover,e.target)}>
           <a href="/order" class="a">
             <img src="/images/ice-cream-outline.svg" class="navigation__image" alt="">
-            <span class="text">Заказ</span>
+            <span class="text">Заказы</span>
           </a>
         </li>
           <li class=" vxod">
@@ -85,10 +119,13 @@
                   vhod.vxodModal=true
                 }
                 else if((vhod.vxod?? "false")=="true"){
-                  localStorage.setItem('vxod',"false")
+                  localStorage.setItem('userId',"")
                   vhod.vhodText="Войти"
                   vhod.vxod="false"
                   localStorage.setItem("myEat","[]")
+                  // console.log(vhod)
+                  user.set({})
+                  // console.log($user)
                 }
               }}>{vhod.vhodText}</button>
           </li>
@@ -98,7 +135,13 @@
     <div class="indicator-wrap" id="mover">
       <div class="indicator"></div>
     </div>
-    
+    {#if vhod.vxod && $user.role=="admin"}
+    <div class="my-Header__btn">
+      <button class="vxod__btn" ><img class="my-Header__btn-image" src="images/settings.svg" alt=""></button>
+      
+    </div>      
+    {/if}
+
 </header>
 {#if vhod.vxodModal}
     <div class="vxod-modal" >
@@ -120,24 +163,70 @@
             }}>Регистрация</span>
           </div>
           {#if vhod.registerModal}
-            <input type="text" placeholder="Email">
-            <input type="text" placeholder="Логин">
-            <input type="text" placeholder="Пароль">
+            <input type="text" bind:value={register.email} placeholder="Email">
+            <input type="text" bind:value={register.name} placeholder="Имя">
+            <input type="text" bind:value={register.pass} placeholder="Пароль">
             <input type="text" placeholder="Повторите пароль">
             <button on:click={()=>{
-              localStorage.setItem('vxod',"true")
-              vhod.vxod="true"
-              vhod.vhodText="Выйти"
-              vhod.vxodModal=false
+              fetch('http://127.0.0.1:5000/register', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body:JSON.stringify( {
+                  "name": register.name,
+                  "email": register.email,
+                  "password": register.pass
+                })
+              })
+                .then(response => response.json())
+                .then(data => {
+                  // console.log(data)
+                  data=data.user
+                  data['authorized']= "true"
+                  user.set(data)
+                  vhod.vxodModal=false
+                  vhod.vxod="true"
+                  vhod.vhodText="Выйти"
+                  localStorage.setItem('userId',data.id)
+                  // Обработка полученных данных меню
+                })
+                .catch(error => {
+                  // Обработка ошибок
+                  console.error('Ошибка при получении меню:', error);
+                });
+              
             }}>Регистрация</button>
           {:else}
-            <input type="text" placeholder="Логин">
-            <input type="text" placeholder="Пароль">
+            <input type="text" bind:value={vxodLogin} placeholder="Логин">
+            <input type="text" bind:value={vxodPass} placeholder="Пароль">
             <button on:click={()=>{
-              localStorage.setItem('vxod',"true")
-              vhod.vxod="true"
-              vhod.vhodText="Выйти"
-              vhod.vxodModal=false
+              fetch('http://127.0.0.1:5000/login', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body:JSON.stringify( {
+                  "email": vxodLogin,
+                  "password": vxodPass
+                })
+              })
+                .then(response => response.json())
+                .then(data => {
+                  vhod.vxodModal=false
+                  vhod.vhodText="Выйти"
+                  vhod.vxod="true"
+                  user.set(data)
+                  
+                  localStorage.setItem('userId',data.id)
+
+                  // Обработка полученных данных меню
+                })
+                .catch(error => {
+                  // Обработка ошибок
+                  console.error('Ошибка при получении меню:', error);
+                });
+              
             }}>Войти</button>
           {/if}
 
@@ -147,6 +236,19 @@
 {/if}
 
 <style>
+  .my-Header{
+    justify-content: space-between;
+  }
+  .my-Header__btn{
+    background-color: white !important;
+    color: black !important;
+    border-radius: 10px;
+    margin-right: 50px;
+  }
+  .my-Header__btn-image{
+    width: 35px;
+    height: 35px;
+  }
   .vxod-modal__info-swipe{
     font-size: 20px;
     display: flex;
