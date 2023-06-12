@@ -4,9 +4,12 @@
 <script>
 	import { onMount } from "svelte";
 	import { user } from "../store/user";
+	import { space } from "svelte/internal";
+	import { settings } from "../store/settingsMod";
 
   let vxodLogin;
   let vxodPass;
+  let errorLogin;
 
 let register={
   email:"",
@@ -136,7 +139,9 @@ let register={
       <div class="indicator"></div>
     </div>
     {#if vhod.vxod && $user.role=="admin"}
-    <div class="my-Header__btn">
+    <div class="my-Header__btn" on:click={()=>{
+      settings.set(!$settings)
+    }}>
       <button class="vxod__btn" ><img class="my-Header__btn-image" src="images/settings.svg" alt=""></button>
       
     </div>      
@@ -198,6 +203,7 @@ let register={
               
             }}>Регистрация</button>
           {:else}
+            <span bind:this={errorLogin} style="color: red;" id="errorLogin"></span>
             <input type="text" bind:value={vxodLogin} placeholder="Логин">
             <input type="text" bind:value={vxodPass} placeholder="Пароль">
             <button on:click={()=>{
@@ -213,6 +219,13 @@ let register={
               })
                 .then(response => response.json())
                 .then(data => {
+                  if(data.error){
+                    console.log(data)
+                    errorLogin.textContent='Неверный лоигн или пароль'
+                    return
+                  }
+                  errorLogin.textContent=''
+                  console.log(data)
                   vhod.vxodModal=false
                   vhod.vhodText="Выйти"
                   vhod.vxod="true"
@@ -293,7 +306,7 @@ let register={
   }
   .vxod-modal{
     background-color: rgba(0, 0, 0, .6);
-    position: absolute;
+    position: fixed;
     width: 100%;
     height: 100%;
     top: 0;
