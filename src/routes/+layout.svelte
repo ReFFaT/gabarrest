@@ -139,12 +139,18 @@ let register={
       <div class="indicator"></div>
     </div>
     {#if vhod.vxod && $user.role=="admin"}
-    <div class="my-Header__btn" on:click={()=>{
-      settings.set(!$settings)
-    }}>
-      <button class="vxod__btn" ><img class="my-Header__btn-image" src="images/settings.svg" alt=""></button>
-      
-    </div>      
+    <div class="my-Header-wrap">
+      <div class="my-Header__btn" on:click={()=>{
+        settings.set(!$settings)
+      }}>
+        <button class="vxod__btn" ><img class="my-Header__btn-image" src="images/settings.svg" alt=""></button>
+        
+      </div>
+      <div class="my-Header__btn">
+        <a class="dash__btn" href="/dashBoard" ><img class="my-Header__btn-image" src="images/dashboard.svg" alt=""></a>
+        
+      </div>        
+    </div>       
     {/if}
 
 </header>
@@ -249,6 +255,17 @@ let register={
 {/if}
 
 <style>
+  .dash__btn{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 49px;
+    cursor: pointer;
+  }
+  .my-Header-wrap{
+    display: flex;
+  }
   .my-Header{
     justify-content: space-between;
   }
