@@ -3,6 +3,6 @@
 
     
     onMount(()=>{
-        window.location.href = window.location.href +'home'
+        window.location.href = window.location.origin +'/home'
     })
 </script>
