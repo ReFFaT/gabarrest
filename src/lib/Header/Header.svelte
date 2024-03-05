@@ -1,10 +1,11 @@
 <script>
 	import { onMount } from "svelte";
     import "./Header.css"
+	import { user } from "../../store/user";
+	import { settings } from "../../store/settingsMod";
 
     let activeRoute='home'
     let routeMove;
-    let isAdmin=false
     function setActiveRoute(route){
         activeRoute=route
         let newRoute = document.getElementById(route+"-header")
@@ -14,8 +15,34 @@
     }
     onMount(()=>{
         setActiveRoute("home")
+        let userId=localStorage.getItem("userId")   
+        // console.log(userId)
+        if(userId && userId!==''){
+            fetch(`http://127.0.0.1:5000/users/${Number(userId)}`,
+            {
+                method: 'GET',
+                headers: {
+                'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+            // console.log(data)
+            user.set(data)
+            console.log($user)
+            localStorage.setItem("userId",$user.id)
+            // Обработка полученных данных меню
+            })
+            .catch(error => {
+            // Обработка ошибок
+            console.error('Ошибка при получении меню:', error);
+            }
+            );
+        }
     })
+    function login(){
 
+    }
 </script>
 <div class="header">
     <div class="header__wrapper">
@@ -51,18 +78,23 @@
             </li>
         </ul>
         <div bind:this={routeMove} class="header__slider"></div>
-        <button class="header__button-login">
-            Регистрация
-        </button>
-        <button class="header__button-login">
-            Вход
-        </button>
-        
+        {#if $user.authorized}
+            <button class="header__button-login">
+                Выйти
+            </button>
+        {:else}
+            <button class="header__button-login">
+                Регистрация
+            </button>
+            <button class="header__button-login">
+                Вход
+            </button>
+        {/if}        
     </div>
-    {#if isAdmin}
+    {#if $user.role === "admin"}
         <div class="header__admin">
             <div class="header__admin-settings">
-                <button class="header__admin-settings-btn" >
+                <button class="header__admin-settings-btn" on:click={()=> settings.set(!$settings)} >
                     <img class="header__admin-settings-btn-image" src="images/settings.svg" alt="">
                 </button>
             </div>
