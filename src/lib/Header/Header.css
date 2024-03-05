@@ -1,0 +1,117 @@
+.header__button-login {
+    border-color: #3498db;
+    
+    height: 44px;
+    border-radius: 10px;
+    font-size: 18px;
+    padding: 0 10px 1px 10px;
+    border: none;
+    color: #fff;
+    box-shadow: 0 0 40px 40px #3498db inset, 0 0 0 0 #3498db;
+    transition: all 150ms ease-in-out;
+    
+    &:hover {
+        color: black;
+        box-shadow: 0 0 10px 0 #3498db inset, 0 0 10px 4px #3498db;
+    }
+    &:active{
+        color: #fff;
+        box-shadow: 0 0 40px 40px #3498db inset, 0 0 0 0 #3498db;
+    }
+}
+.header{
+    position: absolute;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 50px 50px 0 100px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+}
+.header__wrapper{
+    padding-right: 20px;
+    max-width: 800px;
+    min-width: 800px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    top: 0;
+    z-index: 10;
+    width: 100%;
+    height: 60px;
+    background-color: white;
+    border-radius: 20px;
+    
+}
+.header__list{
+    height: 60px;
+    width: 100%;
+    list-style: none;
+    margin: 0 0 5px 0;
+    padding: 0 45px;
+    display: flex;
+    align-items: center;
+}
+.header__item-wrapper{
+    width: 120px;
+}
+.header__list-item{
+    display: flex;
+    box-sizing: border-box;
+    list-style:none;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    padding: 5px 15px;
+    text-decoration: none;
+    color: rgb(88, 82, 82);
+    transition: all .3s;
+    &:hover{
+        color: black;
+    }
+}
+
+.header__list-icon{
+    position: absolute;
+    margin: 0 auto;
+    width: 35px;
+    bottom: 0;
+    z-index: 10;
+    height: 35px;
+    opacity: 0;
+    pointer-events: none;
+    user-select: none;
+}
+.header__list-text{
+    position: relative;
+    z-index: 1;
+    transition: all .3s;
+    font-weight: 600;
+    font-size: 22px;
+    margin: 0 0 3px 0;
+}
+.header__list-item:hover .header__list-text{
+    transform: translateY(-5px);
+}
+.header__slider{
+    transition: all .3s;
+    z-index: 0;
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background: #fff;
+    bottom: -70%;
+    left: 55px;
+    border-radius: 50%;
+}
+.header__list-item.active .header__list-text{
+    color: #2196f3;
+    transform: translateY(-7px)
+}
+.header__list-item.active .header__list-icon{
+    transition: all .5s;
+    opacity: 1;
+    bottom: -67%;
+}
