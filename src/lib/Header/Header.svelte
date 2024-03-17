@@ -3,9 +3,13 @@
     import "./Header.css"
 	import { user } from "../../store/user";
 	import { settings } from "../../store/settingsMod";
+	import Login from "$lib/Login/Login.svelte";
 
     let activeRoute='home'
     let routeMove;
+    let showLogin= false
+    let isLogin = false
+
     function setActiveRoute(route){
         activeRoute=route
         let newRoute = document.getElementById(route+"-header")
@@ -14,7 +18,8 @@
         routeMove.style.left = newRouteRect.left + 10 - routeMove.getBoundingClientRect().width  + "px"
     }
     onMount(()=>{
-        setActiveRoute("home")
+        let pathname = window.location.pathname?.split('/')?? "home"
+        setActiveRoute(pathname[1])
         let userId=localStorage.getItem("userId")   
         // console.log(userId)
         if(userId && userId!==''){
@@ -42,6 +47,10 @@
     })
     function login(){
 
+    }
+    function logout(){
+        localStorage.setItem("userId",'false') 
+        user.set({})
     }
 </script>
 <div class="header">
@@ -79,14 +88,20 @@
         </ul>
         <div bind:this={routeMove} class="header__slider"></div>
         {#if $user.authorized}
-            <button class="header__button-login">
+            <button class="header__button-login" on:click={logout}>
                 Выйти
             </button>
         {:else}
-            <button class="header__button-login">
+            <button class="header__button-login" on:click={()=>{
+                isLogin=false
+                showLogin=true
+            }}>
                 Регистрация
             </button>
-            <button class="header__button-login">
+            <button class="header__button-login" on:click={()=>{
+                isLogin=true
+                showLogin=true
+            }}>
                 Вход
             </button>
         {/if}        
@@ -105,8 +120,9 @@
             </div>        
         </div> 
     {/if}
+   
 </div>
-
+<Login bind:isLogin={isLogin} bind:showLogin={showLogin} />
 
 <style>
     .header__admin{

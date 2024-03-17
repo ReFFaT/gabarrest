@@ -94,7 +94,7 @@
     <div class="container">
       <div class="row">
         <div class="col-lg-12">
-        <h1><i>Ваша корзина</i></h1>
+        <h1 class="container__title"><i>Ваша корзина</i></h1>
       </div>
     </div>
   </div>
@@ -149,6 +149,10 @@
         width: 100%;
         text-align: center;
         margin-top: 150px;
+    }
+    .container__title{
+        position: relative;
+        z-index: 10;
     }
     .container-info h1{
         color: black !important;
